@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-service-dev
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: example-service-dev
+  template:
+    metadata:
+      annotations:
+        policy.otomi.io/ignore-sidecar: container-limits,psp-allowed-users
+      labels:
+        app: example-service-dev
+    spec:
+      containers:
+        - name: example-service-dev
+          image: harbor.134.209.138.125.nip.io/team-admin/example-service:4
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              memory: 64Mi
+              cpu: 100m
+            requests:
+              memory: 64Mi
+              cpu: 100m
+          securityContext:
+            runAsUser: 1001

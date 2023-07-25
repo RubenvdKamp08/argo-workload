@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: example-service
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - cluster: dev
+            url: https://kubernetes.default.svc
+          - cluster: prod
+            url: https://kubernetes.default.svc
+  template:
+    metadata:
+      name: example-service-{{cluster}}
+    spec:
+      project: default
+      source:
+        repoURL: https://gitea.134.209.138.125.nip.io/otomi/argo-workload.git
+        targetRevision: HEAD
+        path: example-service-{{cluster}}
+      destination:
+        server: "{{url}}"
+        namespace: example-service-{{cluster}}
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - PruneLast=true
+          - ApplyOutOfSyncOnly=true

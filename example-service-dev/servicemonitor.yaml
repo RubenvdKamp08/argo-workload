@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: example-service-dev
+  labels:
+    app: example-service-dev-metrics
+    prometheus: system
+spec:
+  namespaceSelector:
+    matchNames:
+      - example-service-dev
+  selector:
+    matchLabels:
+      app: example-service-dev
+  endpoints:
+    - targetPort: 5000
+      path: /metrics
+      interval: 10s

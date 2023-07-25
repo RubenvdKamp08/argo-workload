@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: basic-service-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: basic-service-prod
+  template:
+    metadata:
+      annotations:
+        prometheus.io/path: '/metrics'
+        prometheus.io/port: '5000'
+        prometheus.io/scrape: 'true'
+        policy.otomi.io/ignore-sidecar: container-limits,psp-allowed-users
+      labels:
+        app: basic-service-prod
+    spec:
+      containers:
+        - name: basic-service-prod
+          image: harbor.134.209.138.125.nip.io/team-admin/basic-service:4
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              memory: '64Mi'
+              cpu: '100m'
+            requests:
+              memory: '64Mi'
+              cpu: '100m'
+          securityContext:
+            runAsUser: 1001
+          env:
+            - name: test
+              valueFrom:
+                secretKeyRef:
+                  name: basic-service-prod
+                  key: test

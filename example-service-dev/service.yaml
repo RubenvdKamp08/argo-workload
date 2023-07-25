@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: example-service-dev
+  labels:
+    app: example-service-dev
+spec:
+  selector:
+    app: example-service-dev
+  ports:
+    - port: 80
+      targetPort: 5000
